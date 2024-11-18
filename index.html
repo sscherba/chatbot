@@ -3,12 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirecting...</title>
-    <script>
-        window.location.href = "https://chatgpt.com/g/g-GpSFCdYRt-nikki-s-dilemma-and-the-dbt-pros-cons-skill";
-    </script>
+    <title>Custom GPT Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+        textarea, button {
+            margin: 10px;
+            width: 80%;
+            max-width: 600px;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
-    <p>If you are not redirected automatically, <a href="https://chatgpt.com/g/g-GpSFCdYRt-nikki-s-dilemma-and-the-dbt-pros-cons-skill">click here</a>.</p>
+    <h1>Custom GPT Interface</h1>
+    <textarea id="user-input" rows="4" placeholder="Enter your query..."></textarea><br>
+    <button onclick="sendQuery()">Send</button>
+    <div id="response" class="response"></div>
+    <script>
+        async function sendQuery() {
+            const userInput = document.getElementById('user-input').value;
+            const responseDiv = document.getElementById('response');
+            responseDiv.textContent = 'Loading...';
+
+            try {
+                const response = await fetch('/proxy', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        prompt: userInput,
+                        max_tokens: 100,
+                    }),
+                });
+                const data = await response.json();
+                responseDiv.textContent = data.choices[0].text.trim();
+            } catch (error) {
+                responseDiv.textContent = 'Error: Unable to fetch response. Check console for details.';
+                console.error(error);
+            }
+        }
+    </script>
 </body>
 </html>
+
